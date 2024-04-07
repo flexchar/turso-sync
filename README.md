@@ -1,5 +1,8 @@
 # turso-sync
 
+Packages: https://github.com/flexchar/turso-sync/pkgs/container/turso-sync
+GitHub: https://github.com/flexchar/turso-sync
+
 To install dependencies:
 
 ```bash

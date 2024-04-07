@@ -1,6 +1,5 @@
-
 # -----------------------------------------------------------------------
-# Create Turso executable with Bun
+# Create Turso Sync with Bun
 # -----------------------------------------------------------------------
 FROM oven/bun:1 as turso-sync
 
@@ -18,4 +17,5 @@ RUN bun build --compile --minify index.ts --outfile turso-sync
 
 CMD ["/app/turso-sync"]
 
+LABEL org.opencontainers.image.source https://github.com/flexchar/turso-sync
 
