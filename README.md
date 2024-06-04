@@ -3,6 +3,8 @@
 Packages: https://github.com/flexchar/turso-sync/pkgs/container/turso-sync
 GitHub: https://github.com/flexchar/turso-sync
 
+> This is to solve personal problem but could also be made for others. To do so, I'd like to build a dedicated image for each platform.
+
 To install dependencies:
 
 ```bash
