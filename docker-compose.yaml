@@ -1,0 +1,12 @@
+services:
+    turso-sync:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        volumes:
+            - ./out:/app/out
+        environment:
+            - LIBSQL_DB_URL=${LIBSQL_DB_URL}
+            - LIBSQL_DB_AUTH_TOKEN=${LIBSQL_DB_AUTH_TOKEN}
+            - OUTPUT_DB_PATH=${OUTPUT_DB_PATH}
+            - SYNC_INTERVAL=${SYNC_INTERVAL:-1}

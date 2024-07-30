@@ -31,40 +31,50 @@ if (!LIBSQL_DB_AUTH_TOKEN) {
 
 if (!OUTPUT_DB_PATH || !OUTPUT_DB_PATH.endsWith('.db')) {
     console.error('Missing OUTPUT_DB_PATH or invalid file extension');
-    console.error('OUTPUT_DB_PATH must end with .db, such as /path/to/turso.db');
+    console.error(
+        'OUTPUT_DB_PATH must end with .db, such as /path/to/turso.db',
+    );
     process.exit(1);
 }
 
-// Listen to SIGINT and SIGTERM signals
-process.on('SIGINT', () => {
-    console.log('Received SIGINT');
-    process.exit(0);
-});
-
-process.on('SIGTERM', () => {
-    console.log('Received SIGTERM');
-    process.exit(0);
-});
+// Ensure the file exists
+import path from 'path';
+const absolutePath = path.resolve(OUTPUT_DB_PATH);
+console.log(`Output DB Path: ${absolutePath}`);
+// import fs from 'fs';
+// fs.existsSync(OUTPUT_DB_PATH) || fs.writeFileSync(OUTPUT_DB_PATH, '');
+// Version 0.8.0 is broken and will complain about missing file.
 
 const client = createClient({
-    url: `file:${OUTPUT_DB_PATH}`,
+    url: `file:${absolutePath}`,
     syncUrl: LIBSQL_DB_URL,
     authToken: LIBSQL_DB_AUTH_TOKEN,
-    // Not documented in the turso docs
-    // syncInterval: 60,
+    // syncInterval: 60, // will do it manually
 });
 
+let isSyncing = false;
 async function sync() {
+    if (isSyncing) {
+        console.log('Sync already in progress');
+        return;
+    }
+    isSyncing = true;
     console.log(`Syncing ${LIBSQL_DB_URL} -> ${OUTPUT_DB_PATH}`);
     console.time(`sync()`);
-    await client.sync();
+    await client.sync().catch((err) => {
+        console.error('Error syncing', err);
+        process.exit(1);
+    });
     console.timeEnd('sync()');
     // Blank line
     console.log();
+    isSyncing = false;
+
+    if (SYNC_INTERVAL) {
+        const interval = parseInt(SYNC_INTERVAL) * 1000;
+        setTimeout(sync, interval);
+    }
 }
 
-if (SYNC_INTERVAL) {
-    const interval = parseInt(SYNC_INTERVAL) * 1000;
-    console.log(`Will sync every ${SYNC_INTERVAL} seconds`);
-    setInterval(sync, interval);
-} else sync();
+SYNC_INTERVAL && console.log(`Will sync every ${SYNC_INTERVAL} seconds`);
+sync();
