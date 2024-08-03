@@ -59,7 +59,7 @@ async function sync() {
         return;
     }
     isSyncing = true;
-    console.log(`Syncing ${LIBSQL_DB_URL} -> ${OUTPUT_DB_PATH}`);
+    console.log(`Syncing ${LIBSQL_DB_URL} -> ${absolutePath}`);
     console.time(`sync()`);
     await client.sync().catch((err) => {
         console.error('Error syncing', err);
