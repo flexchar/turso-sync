@@ -1,3 +1,5 @@
+
+
 # turso-sync
 
 Packages: https://github.com/flexchar/turso-sync/pkgs/container/turso-sync
@@ -31,7 +33,7 @@ now=$(date +%s)
 tag="ghcr.io/flexchar/turso-sync:$now"
 echo "building image for tag: $tag"
 docker build --platform=linux/amd64 -t $tag -t ghcr.io/flexchar/turso-sync:latest .
-docker push $tag
+docker push $tag && docker push ghcr.io/flexchar/turso-sync:latest
 ```
 
 To use in Docker Compose
